@@ -1,4 +1,3 @@
-from decorators import case_insensitive_input
 from models.team import Team
 from models.player import Player
 
@@ -24,6 +23,13 @@ def display_teams():
     teams = Team.get_all()
     if not teams:
         print("No teams in database")
+        choice = input("Would you like to add a team? (y/n): ")
+        if choice.lower() == 'y':
+            add_team()
+        elif choice.lower() == 'n':
+            return  # Go back to the main menu or do nothing
+        else:
+            print("Invalid choice, please try again.")
     else:
         for index, team in enumerate(teams):
             print(f"{index + 1}. {team.name} - Coach: {team.coach}")
@@ -32,7 +38,7 @@ def display_teams():
         print("- 'B' to go back")
         print("- 'E' to exit")
 
-    handle_team_selection(teams)
+        handle_team_selection(teams)
 
 def handle_team_selection(teams):
     choice = input().lower()
@@ -47,6 +53,7 @@ def handle_team_selection(teams):
         exit()
     else:
         print("Invalid choice, please try again.")
+        handle_team_selection(teams)  # Prompt again
 
 def add_team():
     name = input("Enter team name: ")
@@ -56,11 +63,13 @@ def add_team():
         print("Team added!")
     else:
         print("Both team name and coach name are required.")
+    display_teams()
 
 def manage_team(team):
     while True:
         print(f"\nSelected Team: {team.name} - Coach: {team.coach}")
-        print("1. View players")
+        print("************************************")
+        print("\n1. View players")
         print("2. Edit team")
         print("3. Delete team")
         print("B. Go back")
@@ -73,7 +82,7 @@ def manage_team(team):
             update_team(team)
         elif choice == '3':
             delete_team(team)
-            break  # Return to team list after deletion
+            break  # Exit after deleting the team
         elif choice == 'b':
             break
         elif choice == 'e':
@@ -85,10 +94,12 @@ def manage_team(team):
 def update_team(team):
     new_name = input(f"Enter new team name (or press Enter to keep '{team.name}'): ")
     new_coach = input(f"Enter new coach name (or press Enter to keep '{team.coach}'): ")
+
     if new_name:
         team.name = new_name
     if new_coach:
         team.coach = new_coach
+
     team.save()
     print("Team updated!")
     print(f"Team name: {team.name}")
@@ -99,40 +110,26 @@ def delete_team(team):
     if confirm.lower() == 'y':
         team.delete()
         print(f"Team {team.name} deleted!")
+        display_teams()  # Return to the list of teams
 
 def view_players(team):
     players = team.players()
     if not players:
         print("No players currently associated with this team.")
-        print("Would you like to add a player? (y/n): ")
-        if input().lower() == 'y':
+        choice = input("Would you like to add a player? (y/n): ").lower()
+        if choice == 'y':
             add_player(team.id)
+        elif choice == 'n':
+            return
+        else:
+            print("Invalid choice, please try again.")
     else:
+        print("Team Players:")
         for index, player in enumerate(players):
             print(f"{index + 1}. {player.name} - Position: {player.position}")
-        print("\n- Select a player by number")
-        print("- 'B' to go back")
-        print("- 'E' to exit")
+        print("\nSelect a player by number, 'B' to go back, 'E' to exit:")
 
         handle_player_selection(players, team)
-
-def add_player(team_id):
-    # Fetch the team first to check if it's valid
-    team = Team.find_by_id(team_id)
-    if not team:
-        print("Invalid team specified. Please check the team ID.")
-        return  # Exit the function if no valid team is found
-
-    name = input("Enter player name: ")
-    position = input("Enter player position: ")
-    if name and position:
-        try:
-            Player.create(name, position, team_id)
-            print(f"Player '{name}' added to the team!")
-        except ValueError as e:
-            print(e)
-    else:
-        print("Both player name and position are required.")
 
 def handle_player_selection(players, team):
     choice = input().lower()
@@ -145,6 +142,7 @@ def handle_player_selection(players, team):
         exit()
     else:
         print("Invalid choice, please try again.")
+        handle_player_selection(players, team)  # Prompt again
 
 def manage_player(player):
     print(f"\nSelected Player: {player.name} - Position: {player.position}")
@@ -179,6 +177,15 @@ def delete_player(player):
     if confirm.lower() == 'y':
         player.delete()
         print(f"Player {player.name} deleted!")
+
+def add_player(team_id):
+    name = input("Enter player name: ")
+    position = input("Enter player position: ")
+    if name and position:
+        Player.create(name, position, team_id)
+        print(f"Player '{name}' added to the team!")
+    else:
+        print("Both player name and position are required.")
 
 if __name__ == "__main__":
     cli()
