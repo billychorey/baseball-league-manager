@@ -1,5 +1,10 @@
 from models.team import Team
 from models.player import Player
+from helpers import (
+    exit_program, list_teams, find_team_by_name, find_team_by_id,
+    create_team, update_team, delete_team, list_players, find_player_by_name,
+    find_player_by_id, create_player, update_player, delete_player, list_team_players
+)
 
 def cli():
     Team.create_tables()
@@ -14,8 +19,7 @@ def cli():
         if choice == 't':
             display_teams()
         elif choice == 'e':
-            print("Goodbye!")
-            break
+            exit_program()
         else:
             print("Invalid choice, please try again.")
 
@@ -25,9 +29,9 @@ def display_teams():
         print("No teams in database")
         choice = input("Would you like to add a team? (y/n): ")
         if choice.lower() == 'y':
-            add_team()
+            create_team()
         elif choice.lower() == 'n':
-            return  # Go back to the main menu or do nothing
+            return
         else:
             print("Invalid choice, please try again.")
     else:
@@ -45,25 +49,14 @@ def handle_team_selection(teams):
     if choice.isdigit() and 1 <= int(choice) <= len(teams):
         manage_team(teams[int(choice) - 1])
     elif choice == 'a':
-        add_team()
+        create_team()
     elif choice == 'b':
         return
     elif choice == 'e':
-        print("Goodbye!")
-        exit()
+        exit_program()
     else:
         print("Invalid choice, please try again.")
-        handle_team_selection(teams)  # Prompt again
-
-def add_team():
-    name = input("Enter team name: ")
-    coach = input("Enter coach name: ")
-    if name and coach:
-        Team.create(name, coach)
-        print("Team added!")
-    else:
-        print("Both team name and coach name are required.")
-    display_teams()
+        handle_team_selection(teams)
 
 def manage_team(team):
     while True:
@@ -82,35 +75,13 @@ def manage_team(team):
             update_team(team)
         elif choice == '3':
             delete_team(team)
-            break  # Exit after deleting the team
+            break
         elif choice == 'b':
             break
         elif choice == 'e':
-            print("Goodbye!")
-            exit()
+            exit_program()
         else:
             print("Invalid choice, please try again.")
-
-def update_team(team):
-    new_name = input(f"Enter new team name (or press Enter to keep '{team.name}'): ")
-    new_coach = input(f"Enter new coach name (or press Enter to keep '{team.coach}'): ")
-
-    if new_name:
-        team.name = new_name
-    if new_coach:
-        team.coach = new_coach
-
-    team.save()
-    print("Team updated!")
-    print(f"Team name: {team.name}")
-    print(f"Team coach: {team.coach}")
-
-def delete_team(team):
-    confirm = input("Are you sure you want to delete this team? (y/n): ")
-    if confirm.lower() == 'y':
-        team.delete()
-        print(f"Team {team.name} deleted!")
-        display_teams()  # Return to the list of teams
 
 def view_players(team):
     players = team.players()
@@ -118,7 +89,7 @@ def view_players(team):
         print("No players currently associated with this team.")
         choice = input("Would you like to add a player? (y/n): ").lower()
         if choice == 'y':
-            add_player(team.id)
+            create_player(team.id)
         elif choice == 'n':
             return
         else:
@@ -136,13 +107,12 @@ def handle_player_selection(players, team):
     if choice.isdigit() and 1 <= int(choice) <= len(players):
         manage_player(players[int(choice) - 1])
     elif choice == 'b':
-        manage_team(team)  # Returns to team management
+        manage_team(team)
     elif choice == 'e':
-        print("Goodbye!")
-        exit()
+        exit_program()
     else:
         print("Invalid choice, please try again.")
-        handle_player_selection(players, team)  # Prompt again
+        handle_player_selection(players, team)
 
 def manage_player(player):
     print(f"\nSelected Player: {player.name} - Position: {player.position}")
@@ -157,39 +127,14 @@ def manage_player(player):
     elif choice == '2':
         delete_player(player)
     elif choice == 'b':
-        return  # Go back to player listing
+        return
     elif choice == 'e':
-        print("Goodbye!")
-        exit()
+        exit_program()
     else:
         print("Invalid choice, please try again.")
 
-def update_player(player):
-    new_name = input(f"Enter new player name (or press Enter to keep '{player.name}'): ")
-    new_position = input(f"Enter new player position (or press Enter to keep '{player.position}'): ")
-    player.name = new_name if new_name else player.name
-    player.position = new_position if new_position else player.position
-    player.save()
-    print("Player updated!")
-
-def delete_player(player):
-    confirm = input("Are you sure you want to delete this player? (y/n): ")
-    if confirm.lower() == 'y':
-        player.delete()
-        print(f"Player {player.name} deleted!")
-
-def add_player(team_id):
-    name = input("Enter player name: ")
-    position = input("Enter player position: ")
-    if name and position:
-        Player.create(name, position, team_id)
-        print(f"Player '{name}' added to the team!")
-    else:
-        print("Both player name and position are required.")
-
 if __name__ == "__main__":
     cli()
-
 
 
 
