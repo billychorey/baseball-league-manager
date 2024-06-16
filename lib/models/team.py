@@ -93,7 +93,7 @@ class Team:
             WHERE id = ?
         """
         CURSOR.execute(sql, (self.id,))
-        CONN.commit()
+        CONN.commit ()
 
         # Safely delete the dictionary entry using id as the key
         type(self).all.pop(self.id, None)  # Use pop to avoid KeyError if id doesn't exist
@@ -150,10 +150,8 @@ class Team:
         """
         CURSOR.execute(sql, (self.id,))
         rows = CURSOR.fetchall()
-        return [
-            Player.instance_from_db(row) for row in rows
-        ]
-
+        print(f"Debug: Fetching players for Team ID {self.id}, Rows: {rows}")  # Debug output
+        return [Player.instance_from_db(row) for row in rows]
 
 # import team here somewhere inside this method
 # getters and setters - these are validations. I need these.

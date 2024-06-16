@@ -90,6 +90,8 @@ class Player:
     @classmethod
     def instance_from_db(cls, row):
         team = Team.find_by_id(row[3])
+        if not team:
+            print(f"Error: No team found with ID {row[3]}")  # Debug output
         player = cls(row[1], row[2], team, row[0])
         return player
 

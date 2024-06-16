@@ -137,18 +137,20 @@ def view_players(team):
     players = team.players()
     if not players:
         print("No players currently associated with this team.")
-        choice = get_choice("Would you like to add a player? (y/n): ")
-        if choice == 'y':
-            create_player(team.id)
-        elif choice == 'n':
-            return
-        else:
-            print("Invalid choice, please try again.")
+        while True:  # Adding a loop for valid input handling
+            choice = get_choice("Would you like to add a player? (y/n): ")
+            if choice == 'y':
+                create_player(team.id)
+                break  # Break after creating player to avoid looping
+            elif choice == 'n':
+                break  # Break if no player is to be added
+            else:
+                print("Invalid choice, please try again.")
     else:
         print("Team Players:")
-        list_players(team.id)
+        list_players(team.id)  # Assuming this function prints each player nicely
         print("\nSelect a player by number, 'B' to go back, 'E' to exit:")
-        handle_player_selection(team.players(), team)
+        handle_player_selection(players, team)
 
 def handle_player_selection(players, team):
     while True:
