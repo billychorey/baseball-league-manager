@@ -95,8 +95,8 @@ class Team:
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
-        # Delete the dictionary entry using id as the key
-        del type(self).all[self.id]
+        # Safely delete the dictionary entry using id as the key
+        type(self).all.pop(self.id, None)  # Use pop to avoid KeyError if id doesn't exist
 
         # Set the id to None
         self.id = None

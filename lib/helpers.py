@@ -7,18 +7,8 @@ def exit_program():
 
 def list_teams():
     teams = Team.get_all()
-    for team in teams:
-        print(team)
-
-def find_team_by_name():
-    name = input("Enter the team's name: ")
-    team = Team.find_by_name(name)
-    print(team) if team else print(f'Team {name} not found')
-
-def find_team_by_id():
-    id_ = input("Enter the team's id: ")
-    team = Team.find_by_id(id_)
-    print(team) if team else print(f'Team {id_} not found')
+    for index, team in enumerate(teams):
+        print(f"{index + 1}. {team.name} - Coach: {team.coach}")
 
 def create_team():
     name = input("Enter the team's name: ")
@@ -38,23 +28,24 @@ def update_team(team):
     print("Team updated!")
 
 def delete_team(team):
-    team.delete()
-    print(f'Team {team.id} deleted')
+    try:
+        confirm = input(f"Are you sure you want to delete {team.name}? (y/n): ")
+        if confirm.lower() == 'y':
+            team.delete()  # This calls the delete method on the team instance
+            print(f"Team {team.name} deleted successfully.")
+            return None  # Return None to signify the team has been successfully deleted
+        else:
+            print("Deletion canceled.")
+            return team  # Return the team instance if deletion was not confirmed
+    except Exception as e:
+        print(f"Failed to delete team: {e}")
+        return team  # Return the team instance if an error occurs during deletion
 
-def list_players():
-    players = Player.get_all()
-    for player in players:
-        print(player)
 
-def find_player_by_name():
-    name = input("Enter the player's name: ")
-    player = Player.find_by_name(name)
-    print(player) if player else print(f'Player {name} not found')
-
-def find_player_by_id():
-    id_ = input("Enter the player's id: ")
-    player = Player.find_by_id(id_)
-    print(player) if player else print(f'Player {id_} not found')
+def list_players(team_id):
+    players = Player.get_players_by_team_id(team_id)
+    for index, player in enumerate(players):
+        print(f"{index + 1}. {player.name} - Position: {player.position}")
 
 def create_player(team_id):
     name = input("Enter the player's name: ")
@@ -76,8 +67,3 @@ def update_player(player):
 def delete_player(player):
     player.delete()
     print(f'Player {player.id} deleted')
-
-def list_team_players(team):
-    players = team.players()
-    for player in players:
-        print(player)
