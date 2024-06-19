@@ -111,12 +111,10 @@ class Player:
         return None  # Return None if no row found
 
     @classmethod
-    def find_by_name(cls, name):
-        sql = "SELECT * FROM players WHERE name = ?"
-        row = CURSOR.execute(sql, (name,)).fetchone()
-        if row:
-            return cls.instance_from_db(row)
-        return None
+    def find_by(cls, attribute, value):
+        sql = f"SELECT * FROM players WHERE {attribute} = ?"
+        row = CURSOR.execute(sql, (value,)).fetchone()
+        return cls.instance_from_db(row) if row else None
 
     @classmethod
     def get_players_by_team_id(cls, team_id):

@@ -18,11 +18,14 @@ def cli():
 
     while True:
         print("\n1. Type T or t to view all teams")
-        print("2. Type E or e to exit")
+        print("2. Type F or f to find a team by name")
+        print("3. Type E or e to exit")
         choice = get_choice("\nChoose an option: ")
 
         if choice == 't':
             display_teams()
+        elif choice == 'f':
+            find_team()
         elif choice == 'e':
             exit_program()
         else:
@@ -37,11 +40,11 @@ def display_teams():
             if choice == 'y':
                 create_team()
             elif choice == 'n':
-                return  # Exit the display_teams function if no team is added
+                return
             else:
                 print("Invalid choice, please try again.")
         else:
-            list_teams()  # Assuming list_teams() prints all teams with formatting
+            list_teams()
             print("\n- Select a team by number")
             print("- 'A' to add a team")
             print("- 'B' to go back")
@@ -52,27 +55,21 @@ def display_teams():
                 manage_team(teams[int(choice) - 1])
             elif choice == 'a':
                 create_team()
-                continue  # Ensure the updated list is displayed after adding a team
+                continue
             elif choice == 'b':
-                break  # Break the while loop to return to the main menu
+                break
             elif choice == 'e':
                 exit_program()
             else:
                 print("Invalid choice, please try again.")
 
-def handle_team_selection(teams):
-    while True:
-        choice = get_choice("Enter your choice: ")
-        if choice.isdigit() and 1 <= int(choice) <= len(teams):
-            manage_team(teams[int(choice) - 1])
-        elif choice == 'a':
-            create_team()
-        elif choice == 'b':
-            return
-        elif choice == 'e':
-            exit_program()
-        else:
-            print("Invalid choice, please try again.")
+def find_team():
+    name = get_choice("Enter the team name (case insensitive): ")
+    team = Team.find_by_name(name)
+    if team:
+        manage_team(team)
+    else:
+        print("No team found with that name.")
 
 def manage_team(team):
     while True:
@@ -85,34 +82,7 @@ def manage_team(team):
         print("\n1. View players")
         print("2. Edit team")
         print("3. Delete team")
-        print("B. Go back")
-        print("E. Exit")
-        choice = get_choice("\nChoose an option: ")
-
-        if choice == '1':
-            view_players(team)
-        elif choice == '2':
-            update_team(team)
-        elif choice == '3':
-            if delete_team(team) is None:
-                return
-        elif choice == 'b':
-            return
-        elif choice == 'e':
-            exit_program()
-        else:
-            print("Invalid choice, please try again.")
-def manage_team(team):
-    while True:
-        if not team:
-            print("Team has been deleted or is not available.")
-            return
-
-        print(f"\nSelected Team: {team.name} - Coach: {team.coach}")
-        print("************************************")
-        print("\n1. View players")
-        print("2. Edit team")
-        print("3. Delete team")
+        print("4. Find player by name")
         print("B. Go back")
         print("E. Exit")
         choice = get_choice("\nChoose an option: ")
@@ -126,6 +96,8 @@ def manage_team(team):
             if deleted_team is None:
                 print("Team deleted successfully.")
                 return  # Exit manage_team as the team no longer exists
+        elif choice == '4':
+            find_player_in_team(team)
         elif choice == 'b':
             return  # Exit manage_team to go back to the previous menu
         elif choice == 'e':
@@ -149,7 +121,6 @@ def view_players(team):
     else:
         print("Team Players:")
         list_players(team.id)  # Assuming this function prints each player nicely
-        print("\nSelect a player by number, 'B' to go back, 'E' to exit:")
         handle_player_selection(players, team)
 
 def handle_player_selection(players, team):
@@ -163,6 +134,15 @@ def handle_player_selection(players, team):
             exit_program()
         else:
             print("Invalid choice, please try again.")
+
+def find_player_in_team(team):
+    name = get_choice("Enter the player's name (case insensitive): ")
+    players = team.players()
+    player = next((p for p in players if p.name.lower() == name.lower()), None)
+    if player:
+        manage_player(player)
+    else:
+        print("No player found with that name in this team.")
 
 def manage_player(player):
     print(f"\nSelected Player: {player.name} - Position: {player.position}")
@@ -185,8 +165,6 @@ def manage_player(player):
 
 if __name__ == "__main__":
     cli()
-
-
 
 #prop methods look at requirements!!! 
 #should organize files.... helpers.

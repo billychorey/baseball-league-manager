@@ -1,5 +1,4 @@
 from models.__init__ import CURSOR, CONN
-# from models.player import Player
 
 class Team:
     all = {}
@@ -8,6 +7,7 @@ class Team:
         self.id = id
         self.name = name
         self.coach = coach
+        self.players_list = []
 
     @property
     def name(self):
@@ -141,6 +141,16 @@ class Team:
         row = CURSOR.execute(sql, (id,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
+    @classmethod
+    def find_by_name(cls, name):
+        sql = """
+            SELECT *
+            FROM teams
+            WHERE LOWER(name) = LOWER(?)
+        """
+        row = CURSOR.execute(sql, (name,)).fetchone()
+        return cls.instance_from_db(row) if row else None
+
     def players(self):
         """Return list of players associated with the current team"""
         from models.player import Player
@@ -148,10 +158,9 @@ class Team:
             SELECT * FROM players
             WHERE team_id = ?
         """
-        CURSOR.execute(sql, (self.id,))
-        rows = CURSOR.fetchall()
-        print(f"Debug: Fetching players for Team ID {self.id}, Rows: {rows}")  # Debug output
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(row) for row in rows]
+
 
 # import team here somewhere inside this method
 # getters and setters - these are validations. I need these.
