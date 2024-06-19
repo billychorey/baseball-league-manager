@@ -25,7 +25,7 @@ def cli():
         if choice == 't':
             display_teams()
         elif choice == 'f':
-            find_team()
+            find_team_by_name()
         elif choice == 'e':
             exit_program()
         else:
@@ -63,7 +63,7 @@ def display_teams():
             else:
                 print("Invalid choice, please try again.")
 
-def find_team():
+def find_team_by_name():
     name = get_choice("Enter the team name (case insensitive): ")
     team = Team.find_by_name(name)
     if team:
@@ -145,26 +145,41 @@ def find_player_in_team(team):
         print("No player found with that name in this team.")
 
 def manage_player(player):
-    print(f"\nSelected Player: {player.name} - Position: {player.position}")
-    print("1. Edit player")
-    print("2. Delete player")
-    print("B. Go back")
-    print("E. Exit")
-    choice = get_choice("\nChoose an option: ")
+    while True:
+        if not player:
+            print("Player has been deleted or is not available.")
+            return
 
-    if choice == '1':
-        update_player(player)
-    elif choice == '2':
-        delete_player(player)
-    elif choice == 'b':
-        return
-    elif choice == 'e':
-        exit_program()
-    else:
-        print("Invalid choice, please try again.")
+        print(f"\nSelected Player: {player.name} - Position: {player.position}")
+        print("************************************")
+        print("\n1. Edit player")
+        print("2. Delete player")
+        print("3. View team")
+        print("B. Go back")
+        print("E. Exit")
+        choice = get_choice("\nChoose an option: ")
+
+        if choice == '1':
+            update_player(player)
+        elif choice == '2':
+            delete_player(player)
+        elif choice == '3':
+            view_team(player.team)
+        elif choice == 'b':
+            return  # Exit manage_player to go back to the previous menu
+        elif choice == 'e':
+            exit_program()
+        else:
+            print("Invalid choice, please try again.")
+
+def view_team(team):
+    print(f"Team: {team.name}, Coach: {team.coach}")
+    print("Players:")
+    view_players(team)
 
 if __name__ == "__main__":
     cli()
+
 
 #prop methods look at requirements!!! 
 #should organize files.... helpers.
