@@ -1,6 +1,8 @@
 # ⚾ Baseball League Manager
 
 ![Baseball](lib/img/baseball.png)
+*Image of Fenway park - Getty images - from [Fenway - Conde Nast Traveler](https://www.cntraveler.com/activities/boston/fenway-park)
+*
 
 Welcome to the **Baseball League Manager**! This handy app is perfect for parents, coaches, or league managers to keep track of their baseball teams and players.
 
