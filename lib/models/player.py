@@ -90,8 +90,6 @@ class Player:
     @classmethod
     def instance_from_db(cls, row):
         team = Team.find_by_id(row[3])
-        if not team:
-            print(f"Error: No team found with ID {row[3]}")  # Debug output
         player = cls(row[1], row[2], team, row[0])
         return player
 
@@ -111,10 +109,12 @@ class Player:
         return None  # Return None if no row found
 
     @classmethod
-    def find_by(cls, attribute, value):
-        sql = f"SELECT * FROM players WHERE {attribute} = ?"
-        row = CURSOR.execute(sql, (value,)).fetchone()
-        return cls.instance_from_db(row) if row else None
+    def find_by_name(cls, name):
+        sql = "SELECT * FROM players WHERE name = ?"
+        row = CURSOR.execute(sql, (name,)).fetchone()
+        if row:
+            return cls.instance_from_db(row)
+        return None
 
     @classmethod
     def get_players_by_team_id(cls, team_id):

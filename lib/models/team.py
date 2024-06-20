@@ -7,7 +7,6 @@ class Team:
         self.id = id
         self.name = name
         self.coach = coach
-        self.players_list = []
 
     @property
     def name(self):
@@ -58,14 +57,12 @@ class Team:
             # Update the existing record
             sql = "UPDATE teams SET name = ?, coach = ? WHERE id = ?"
             CURSOR.execute(sql, (self.name, self.coach, self.id))
-            print("Updated existing team.")
         else:
             # Insert a new record
             sql = "INSERT INTO teams (name, coach) VALUES (?, ?)"
             CURSOR.execute(sql, (self.name, self.coach))
             self.id = CURSOR.lastrowid  # Get the last inserted ID and assign it to the object's id attribute
             type(self).all[self.id] = self  # Updating the dictionary entry if using a cache
-            print("Inserted new team.")
         CONN.commit()
 
     @classmethod
@@ -93,7 +90,7 @@ class Team:
             WHERE id = ?
         """
         CURSOR.execute(sql, (self.id,))
-        CONN.commit ()
+        CONN.commit()
 
         # Safely delete the dictionary entry using id as the key
         type(self).all.pop(self.id, None)  # Use pop to avoid KeyError if id doesn't exist
@@ -117,7 +114,7 @@ class Team:
             # Update existing instance with new data
             team.name = row[1]
             team.coach = row[2]
-            
+
         return team
 
     @classmethod
@@ -160,18 +157,3 @@ class Team:
         """
         rows = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(row) for row in rows]
-
-
-# import team here somewhere inside this method
-# getters and setters - these are validations. I need these.
-# example of this in dept and employee(and getters and setters)
-
-# need something like this:
-#      @name.setter
-#     def name(self, name):
-#         if isinstance(name, str) and len(name):
-#             self._name = name
-#         else:
-#             raise ValueError(
-#                 "Name must be a non-empty string"
-#             )

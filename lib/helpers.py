@@ -1,69 +1,62 @@
 from models.team import Team
 from models.player import Player
 
-def exit_program():
-    print("Goodbye!")
-    exit()
-
 def list_teams():
     teams = Team.get_all()
-    for index, team in enumerate(teams):
-        print(f"{index + 1}. {team.name} - Coach: {team.coach}")
+    for idx, team in enumerate(teams, start=1):
+        print(f"{idx}. {team.name} - Coach: {team.coach}")
 
 def create_team():
-    name = input("Enter the team's name: ")
-    coach = input("Enter the coach's name: ")
-    try:
-        team = Team.create(name, coach)
-        print(f'Success: Team {team.id} - "{team.name}" coached by {team.coach} has been added.')
-    except Exception as exc:
-        print("Error creating team: ", exc)
+    name = input("Enter team name: ")
+    coach = input("Enter coach name: ")
+    Team.create(name, coach)
+    print(f"Team {name} created successfully.")
 
 def update_team(team):
-    new_name = input(f"Enter new team name (or press Enter to keep '{team.name}'): ")
-    new_coach = input(f"Enter new coach name (or press Enter to keep '{team.coach}'): ")
-    team.name = new_name if new_name else team.name
-    team.coach = new_coach if new_coach else team.coach
+    new_name = input(f"Enter new name for team {team.name} (or press enter to keep current): ") or team.name
+    new_coach = input(f"Enter new coach for team {team.name} (or press enter to keep current): ") or team.coach
+    team.name = new_name
+    team.coach = new_coach
     team.save()
-    print("Team updated!")
+    print(f"Team {team.name} updated successfully.")
 
 def delete_team(team):
-    try:
-        confirm = input(f"Are you sure you want to delete {team.name}? (y/n): ")
-        if confirm.lower() == 'y':
-            team.delete()  # This calls the delete method on the team instance
-            print(f"Team {team.name} deleted successfully.")
-            return None  # Return None to signify the team has been successfully deleted
-        else:
-            print("Deletion canceled.")
-            return team  # Return the team instance if deletion was not confirmed
-    except Exception as e:
-        print(f"Failed to delete team: {e}")
-        return team  # Return the team instance if an error occurs during deletion
-
+    confirmation = input(f"Are you sure you want to delete the team {team.name}? (y/n): ")
+    if confirmation.lower() == 'y':
+        team.delete()
+        print(f"Team {team.name} deleted successfully.")
+        return None
+    else:
+        return team
 
 def list_players(team_id):
     players = Player.get_players_by_team_id(team_id)
-    for index, player in enumerate(players):
-        print(f"{index + 1}. {player.name} - Position: {player.position}")
+    for idx, player in enumerate(players, start=1):
+        print(f"{idx}. {player.name} - Position: {player.position}")
 
 def create_player(team_id):
-    name = input("Enter the player's name: ")
-    position = input("Enter the player's position: ")
-    try:
-        player = Player.create(name, position, team_id)
-        print(f'Success: Player "{player.name}" (Position: {player.position}) added to {player.team.name}.')
-    except Exception as exc:
-        print("Error creating player: ", exc)
+    name = input("Enter player name: ")
+    position = input("Enter player position: ")
+    Player.create(name, position, team_id)
+    print(f"Player {name} created successfully.")
 
 def update_player(player):
-    new_name = input(f"Enter new player name (or press Enter to keep '{player.name}'): ")
-    new_position = input(f"Enter new player position (or press Enter to keep '{player.position}'): ")
-    player.name = new_name if new_name else player.name
-    player.position = new_position if new_position else player.position
+    new_name = input(f"Enter new name for player {player.name} (or press enter to keep current): ") or player.name
+    new_position = input(f"Enter new position for player {player.position} (or press enter to keep current): ") or player.position
+    player.name = new_name
+    player.position = new_position
     player.save()
-    print("Player updated!")
+    print(f"Player {player.name} updated successfully.")
 
 def delete_player(player):
-    player.delete()
-    print(f'Player {player.id} deleted')
+    confirmation = input(f"Are you sure you want to delete the player {player.name}? (y/n): ")
+    if confirmation.lower() == 'y':
+        player.delete()
+        print(f"Player {player.name} deleted successfully.")
+        return None
+    else:
+        return player
+
+def exit_program():
+    print("Exiting program. Goodbye!")
+    exit()
