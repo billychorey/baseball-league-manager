@@ -14,7 +14,7 @@ def get_choice(prompt):
 def cli():
     Team.create_tables()
     Player.create_tables()
-    print("Tables created successfully")
+    # print("\nTables created successfully\n")
 
     while True:
         print("\n1. Type T or t to view all teams")
@@ -31,34 +31,34 @@ def cli():
 def display_teams():
     while True:
         teams = Team.get_all()
-        if not teams:
-            print("No teams in database")
-            choice = get_choice("Would you like to add a team? (y/n): ")
-            if choice == 'y':
-                create_team()
-            elif choice == 'n':
-                return
-            else:
-                print("Invalid choice, please try again.")
-        else:
-            list_teams()
-            print("\n- Select a team by number")
-            print("- 'A' to add a team")
-            print("- 'B' to go back")
-            print("- 'E' to exit")
+        # if not teams:
+        #     print("\nNo teams in database\n")
+        #     choice = get_choice("Would you like to add a team? (y/n): ")
+        #     if choice == 'y':
+        #         create_team()
+        #     elif choice == 'n':
+        #         return
+        #     else:
+        #         print("Invalid choice, please try again.")
+        # else:
+        list_teams()
+        print("\n- Select a team by number")
+        print("- 'A' to add a team")
+        print("- 'B' to go back")
+        print("- 'E' to exit")
 
-            choice = get_choice("Enter your choice: ")
-            if choice.isdigit() and 1 <= int(choice) <= len(teams):
-                manage_team(teams[int(choice) - 1])  # Use the selected index to get the team
-            elif choice == 'a':
-                create_team()
-                continue
-            elif choice == 'b':
-                break
-            elif choice == 'e':
-                exit_program()
-            else:
-                print("Invalid choice, please try again.")
+        choice = get_choice("Enter your choice: ")
+        if choice.isdigit() and 1 <= int(choice) <= len(teams):
+            manage_team(teams[int(choice) - 1])  # Use the selected index to get the team
+        elif choice == 'a':
+            create_team()
+            continue
+        elif choice == 'b':
+            break
+        elif choice == 'e':
+            exit_program()
+        else:
+            print("Invalid choice, please try again.")
 
 def manage_team(team):
     while True:
@@ -85,7 +85,7 @@ def manage_team(team):
         elif choice == '4':
             deleted_team = delete_team(team)  # This will handle the confirmation
             if deleted_team is None:
-                print("Team deleted successfully.")
+                print("Team deleted successfully.\n")
                 return  # Exit manage_team as the team no longer exists
         elif choice == 'b':
             return  # Exit manage_team to go back to the previous menu
@@ -97,7 +97,7 @@ def manage_team(team):
 def view_players(team):
     players = team.players()
     if not players:
-        print("No players currently associated with this team.")
+        print("No players currently associated with this team.\n")
         while True:  # Adding a loop for valid input handling
             choice = get_choice("Would you like to add a player? (y/n): ")
             if choice == 'y':
@@ -116,7 +116,8 @@ def handle_player_selection(players, team):
     while True:
         choice = get_choice("Select a player by number or 'B' to go back: ")
         if choice.isdigit() and 1 <= int(choice) <= len(players):
-            manage_player(players[int(choice) - 1])  # Use the selected index to get the player
+            if manage_player(players[int(choice) - 1], team) == "back":
+                return  # Return to team menu after managing player
         elif choice == 'b':
             return
         elif choice == 'e':
@@ -124,11 +125,11 @@ def handle_player_selection(players, team):
         else:
             print("Invalid choice, please try again.")
 
-def manage_player(player):
+def manage_player(player, team):
     while True:
         if not player:
-            print("Player has been deleted or is not available.")
-            return
+            print("Player has been deleted or is not available.\n")
+            return "back"
 
         print(f"\nSelected Player: {player.name} - Position: {player.position}")
         print("************************************")
@@ -142,11 +143,14 @@ def manage_player(player):
         if choice == '1':
             update_player(player)
         elif choice == '2':
-            delete_player(player)
+            deleted_player = delete_player(player)
+            if deleted_player is None:
+                print("Player deleted successfully.\n")
+                return "back"  # Exit manage_player to go back to the team menu
         elif choice == '3':
             view_team(player.team)
         elif choice == 'b':
-            return  # Exit manage_player to go back to the previous menu
+            return "back"  # Exit manage_player to go back to the previous menu
         elif choice == 'e':
             exit_program()
         else:

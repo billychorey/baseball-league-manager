@@ -21,13 +21,21 @@ def update_team(team):
     print(f"Team {team.name} updated successfully.")
 
 def delete_team(team):
-    confirmation = input(f"Are you sure you want to delete the team {team.name}? (y/n): ")
-    if confirmation.lower() == 'y':
-        team.delete()
-        print(f"Team {team.name} deleted successfully.")
-        return None
-    else:
-        return team
+    while True:
+        confirmation = input(f"Are you sure you want to delete the team {team.name}? (y/n): ").lower()
+        if confirmation == 'y':
+            team.delete()
+            print(f"Team {team.name} deleted successfully.")
+            return None
+        elif confirmation == 'n':
+            return team
+        else:
+            print("Invalid choice. Please select 'y' or 'n'.")
+            choice = input("Press 'B' to go back or 'E' to exit: ").lower()
+            if choice == 'b' or choice == 'n':
+                return team
+            elif choice == 'e':
+                exit_program()
 
 def list_players(team_id):
     players = Player.get_players_by_team_id(team_id)
@@ -49,13 +57,21 @@ def update_player(player):
     print(f"Player {player.name} updated successfully.")
 
 def delete_player(player):
-    confirmation = input(f"Are you sure you want to delete the player {player.name}? (y/n): ")
-    if confirmation.lower() == 'y':
-        player.delete()
-        print(f"Player {player.name} deleted successfully.")
-        return None
-    else:
-        return player
+    while True:
+        confirmation = input(f"Are you sure you want to delete the player {player.name}? (y/n): ").lower()
+        if confirmation == 'y':
+            player.delete()
+            print(f"Player {player.name} deleted successfully.")
+            return None
+        elif confirmation == 'n':
+            return player
+        else:
+            print("Invalid choice. Please select 'y' or 'n'.")
+            choice = input("Press 'B' to go back or 'E' to exit: ").lower()
+            if choice == 'b' or choice == 'n':
+                return player
+            elif choice == 'e':
+                exit_program()
 
 def exit_program():
     print("Exiting program. Goodbye!")
