@@ -3,6 +3,10 @@ from models.player import Player
 
 def list_teams():
     teams = Team.get_all()
+    header = "\nCurrent League Teams"
+    border = "*" * len(header)
+    print(header)
+    print(border)
     for idx, team in enumerate(teams, start=1):
         print(f"{idx}. {team.name} - Coach: {team.coach}")
 
@@ -25,7 +29,7 @@ def delete_team(team):
         confirmation = input(f"Are you sure you want to delete the team {team.name}? (y/n): ").lower()
         if confirmation == 'y':
             team.delete()
-            print(f"Team {team.name} deleted successfully.")
+            print(f"\nTeam {team.name} deleted successfully.\n")
             return None
         elif confirmation == 'n':
             return team
@@ -37,8 +41,9 @@ def delete_team(team):
             elif choice == 'e':
                 exit_program()
 
-def list_players(team_id):
-    players = Player.get_players_by_team_id(team_id)
+def list_players(team):
+    players = team.players()
+    # players = Player.get_players_by_team_id(team_id)
     for idx, player in enumerate(players, start=1):
         print(f"{idx}. {player.name} - Position: {player.position}")
 

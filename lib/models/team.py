@@ -119,24 +119,29 @@ class Team:
 
     @classmethod
     def get_all(cls):
-        """Return a list containing a Team object per row in the table"""
-        sql = """
-            SELECT *
-            FROM teams
-        """
+        """Fetch all teams from the database"""
+        sql = "SELECT * FROM teams"
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]
 
+    @staticmethod
+    def display_teams(teams):
+        header = "Current League Teams"
+        border = "*" * len(header)
+        
+        print(header)
+        print(border)
+        
+        for team in teams:
+            print(f"{team.id}. {team.name} - Coach: {team.coach}")
+
     @classmethod
     def find_by_id(cls, id):
-        """Return a Team object corresponding to the table row matching the specified primary key"""
-        sql = """
-            SELECT *
-            FROM teams
-            WHERE id = ?
-        """
+        sql = "SELECT * FROM teams WHERE id = ?"
         row = CURSOR.execute(sql, (id,)).fetchone()
-        return cls.instance_from_db(row) if row else None
+        if row and row[1]:  # Ensure that the row and team name are valid
+            return cls.instance_from_db(row)
+        return None
 
     @classmethod
     def find_by_name(cls, name):
@@ -151,9 +156,5 @@ class Team:
     def players(self):
         """Return list of players associated with the current team"""
         from models.player import Player
-        sql = """
-            SELECT * FROM players
-            WHERE team_id = ?
-        """
-        rows = CURSOR.execute(sql, (self.id,)).fetchall()
-        return [Player.instance_from_db(row) for row in rows]
+        player_instance = Player('', '', self)
+        return player_instance.get_players_by_team()

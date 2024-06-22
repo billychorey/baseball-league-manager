@@ -31,16 +31,9 @@ def cli():
 def display_teams():
     while True:
         teams = Team.get_all()
-        # if not teams:
-        #     print("\nNo teams in database\n")
-        #     choice = get_choice("Would you like to add a team? (y/n): ")
-        #     if choice == 'y':
-        #         create_team()
-        #     elif choice == 'n':
-        #         return
-        #     else:
-        #         print("Invalid choice, please try again.")
-        # else:
+        if not teams:
+            print("\nNo teams in database\n")
+       
         list_teams()
         print("\n- Select a team by number")
         print("- 'A' to add a team")
@@ -85,7 +78,6 @@ def manage_team(team):
         elif choice == '4':
             deleted_team = delete_team(team)  # This will handle the confirmation
             if deleted_team is None:
-                print("Team deleted successfully.\n")
                 return  # Exit manage_team as the team no longer exists
         elif choice == 'b':
             return  # Exit manage_team to go back to the previous menu
@@ -108,8 +100,7 @@ def view_players(team):
             else:
                 print("Invalid choice, please try again.")
     else:
-        print("Team Players:")
-        list_players(team.id)  # Assuming this function prints each player nicely
+        list_players(team)  # Assuming this function prints each player nicely
         handle_player_selection(players, team)
 
 def handle_player_selection(players, team):
@@ -158,7 +149,7 @@ def manage_player(player, team):
 
 def view_team(team):
     print(f"Team: {team.name}, Coach: {team.coach}")
-    print("Players:")
+    print("Team members:")
     view_players(team)
 
 if __name__ == "__main__":

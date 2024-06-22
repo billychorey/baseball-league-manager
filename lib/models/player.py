@@ -90,8 +90,9 @@ class Player:
     @classmethod
     def instance_from_db(cls, row):
         team = Team.find_by_id(row[3])
-        player = cls(row[1], row[2], team, row[0])
-        return player
+        if not team:
+            raise ValueError("Invalid team data for player")
+        return cls(row[1], row[2], team, row[0])  # id, name, position, team_id
 
     @classmethod
     def get_all(cls):
@@ -116,8 +117,7 @@ class Player:
             return cls.instance_from_db(row)
         return None
 
-    @classmethod
-    def get_players_by_team_id(cls, team_id):
+    def get_players_by_team(self):
         sql = "SELECT * FROM players WHERE team_id = ?"
-        rows = CURSOR.execute(sql, (team_id,)).fetchall()
-        return [cls.instance_from_db(row) for row in rows]
+        rows = CURSOR.execute(sql, (self.team.id,)).fetchall()
+        return [self.instance_from_db(row) for row in rows]
