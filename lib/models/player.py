@@ -89,10 +89,20 @@ class Player:
         CONN.commit()
         type(self).all[self.id] = self
 
+    def update(self):
+        sql = """
+            UPDATE players
+            SET name = ?, position = ?, team_id = ?
+            WHERE id = ?
+        """
+        CURSOR.execute(sql, (self.name, self.position, self.team_id, self.id))
+        CONN.commit()
+
     def delete(self):
         if self.id:
             CURSOR.execute("DELETE FROM players WHERE id = ?", (self.id,))
             CONN.commit()
+            del type(self).all[self.id]
             self.id = None
 
     @classmethod
