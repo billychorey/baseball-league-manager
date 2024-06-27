@@ -5,7 +5,7 @@ def display_teams():
     while True:
         teams = Team.get_all()
         Team.display_teams(teams)
-        print("- Select a team by number")
+        print("\n- Select a team by number")
         print("- 'A' to add a team")
         print("- 'B' to go back")
         print("- 'E' to exit")
@@ -23,7 +23,7 @@ def display_teams():
                 print("Invalid choice. Please try again.")
 
 def add_team():
-    name = input("Enter team name: ")
+    name = input("\nEnter team name: ")
     coach = input("Enter coach name: ")
     team = Team.create(name, coach)
     print(f"Team {team.name} added.")
@@ -39,7 +39,7 @@ def manage_team(team):
         print("B. Go back")
         print("E. Exit")
 
-        choice = input("Choose an option: ").lower()
+        choice = input("\nChoose an option: ").lower()
         if choice == '1':
             view_players(team)
         elif choice == '2':
@@ -58,7 +58,7 @@ def manage_team(team):
 
 def handle_player_selection(players, team):
     while True:
-        choice = input("Select a player by number or 'B' to go back: ").lower()
+        choice = input("\nSelect a player by number or 'B' to go back: ").lower()
         if choice == 'b':
             return "back"
         try:
@@ -69,7 +69,7 @@ def handle_player_selection(players, team):
 
 def manage_player(player, team):
     while True:
-        print(f"Selected Player: {player.name} - Position: {player.position}")
+        print(f"\nSelected Player: {player.name} - Position: {player.position}")
         print("************************************")
         print("1. Edit player")
         print("2. Delete player")
@@ -90,7 +90,7 @@ def manage_player(player, team):
             print("Invalid choice. Please try again.")
 
 def edit_player(player):
-    print(f"Editing Player: {player.name}")
+    print(f"\nEditing Player: {player.name}")
     new_name = input("Enter new name (leave blank to keep current): ")
     new_position = input("Enter new position (leave blank to keep current): ")
 
@@ -100,17 +100,17 @@ def edit_player(player):
         player.position = new_position
 
     player.save()
-    print("Player details updated.")
+    print("\nPlayer details updated.")
 
 def delete_player(player):
     player.delete()
-    print("Player deleted.")
+    print("\nPlayer deleted.")
 
 def view_players(team):
     while True:
         players = team.players()
         if not players:
-            print("No players in this team.")
+            print("\nNo players in this team.")
             print("1. Add player")
             print("B. Go back")
             choice = input("Choose an option: ").lower()
@@ -127,13 +127,13 @@ def view_players(team):
                 return
 
 def add_player(team):
-    name = input("Enter player name: ")
+    name = input("\nEnter player name: ")
     position = input("Enter player position: ")
     player = Player.create(name, position, team.id)
     print(f"Player {player.name} added to team {team.name}.")
 
 def edit_team(team):
-    print(f"Editing Team: {team.name}")
+    print(f"\nEditing Team: {team.name}")
     new_name = input("Enter new team name (leave blank to keep current): ")
     new_coach = input("Enter new coach name (leave blank to keep current): ")
 
