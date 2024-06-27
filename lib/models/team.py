@@ -8,6 +8,9 @@ class Team:
         self.name = name
         self.coach = coach
 
+    def __repr__(self):
+        return f"<Team {self.id}: {self.name}, {self.coach}>"
+
     @property
     def name(self):
         return self._name
@@ -32,94 +35,68 @@ class Team:
 
     @classmethod
     def create_tables(cls):
-        """ Create a new table to persist the attributes of Team instances """
         sql = """
-            CREATE TABLE IF NOT EXISTS teams (
-                id INTEGER PRIMARY KEY,
-                name TEXT,
-                coach TEXT
-            )
+        CREATE TABLE IF NOT EXISTS teams (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            coach TEXT
+        )
         """
         CURSOR.execute(sql)
         CONN.commit()
 
     @classmethod
     def drop_table(cls):
-        """ Drop the table that persists Team instances """
-        sql = """
-            DROP TABLE IF EXISTS teams;
-        """
+        sql = "DROP TABLE IF EXISTS teams;"
         CURSOR.execute(sql)
         CONN.commit()
 
     def save(self):
         if self.id:
-            # Update the existing record
             sql = "UPDATE teams SET name = ?, coach = ? WHERE id = ?"
             CURSOR.execute(sql, (self.name, self.coach, self.id))
         else:
-            # Insert a new record
             sql = "INSERT INTO teams (name, coach) VALUES (?, ?)"
             CURSOR.execute(sql, (self.name, self.coach))
-            self.id = CURSOR.lastrowid  # Get the last inserted ID and assign it to the object's id attribute
-            type(self).all[self.id] = self  # Updating the dictionary entry if using a cache
+            self.id = CURSOR.lastrowid
         CONN.commit()
+        type(self).all[self.id] = self
 
     @classmethod
     def create(cls, name, coach):
-        """ Initialize a new Team instance and save the object to the database """
         team = cls(name, coach)
         team.save()
         return team
 
     def update(self):
-        """Update the table row corresponding to the current Team instance."""
-        sql = """
-            UPDATE teams
-            SET name = ?, coach = ?
-            WHERE id = ?
-        """
+        sql = "UPDATE teams SET name = ?, coach = ? WHERE id = ?"
         CURSOR.execute(sql, (self.name, self.coach, self.id))
         CONN.commit()
 
     def delete(self):
-        """Delete the table row corresponding to the current Team instance,
-        delete the dictionary entry, and reassign id attribute"""
-        sql = """
-            DELETE FROM teams
-            WHERE id = ?
-        """
-        CURSOR.execute(sql, (self.id,))
-        CONN.commit()
-
-        # Safely delete the dictionary entry using id as the key
-        type(self).all.pop(self.id, None)  # Use pop to avoid KeyError if id doesn't exist
-
-        # Set the id to None
-        self.id = None
+        if self.id:
+            sql = "DELETE FROM teams WHERE id = ?"
+            CURSOR.execute(sql, (self.id,))
+            CONN.commit()
+            type(self).all.pop(self.id, None)
+            self.id = None
 
     @classmethod
     def instance_from_db(cls, row):
-        """Return a Team object having the attribute values from the table row."""
         if row is None:
             return None
-
         team_id = row[0]
         team = cls.all.get(team_id)
         if not team:
-            # Create new instance if it's not in the cache
             team = cls(name=row[1], coach=row[2], id=team_id)
             cls.all[team_id] = team
         else:
-            # Update existing instance with new data
             team.name = row[1]
             team.coach = row[2]
-
         return team
 
     @classmethod
     def get_all(cls):
-        """Fetch all teams from the database"""
         sql = "SELECT * FROM teams"
         rows = CURSOR.execute(sql).fetchall()
         return [cls.instance_from_db(row) for row in rows]
@@ -128,10 +105,8 @@ class Team:
     def display_teams(teams):
         header = "Current League Teams"
         border = "*" * len(header)
-        
         print(header)
         print(border)
-        
         for team in teams:
             print(f"{team.id}. {team.name} - Coach: {team.coach}")
 
@@ -139,22 +114,19 @@ class Team:
     def find_by_id(cls, id):
         sql = "SELECT * FROM teams WHERE id = ?"
         row = CURSOR.execute(sql, (id,)).fetchone()
-        if row and row[1]:  # Ensure that the row and team name are valid
+        if row and row[1]:
             return cls.instance_from_db(row)
         return None
 
     @classmethod
     def find_by_name(cls, name):
-        sql = """
-            SELECT *
-            FROM teams
-            WHERE LOWER(name) = LOWER(?)
-        """
+        sql = "SELECT * FROM teams WHERE LOWER(name) = LOWER(?)"
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
     def players(self):
-        """Return list of players associated with the current team"""
         from models.player import Player
-        player_instance = Player('', '', self)
-        return player_instance.get_players_by_team()
+        sql = "SELECT * FROM players WHERE team_id = ?"
+        rows = CURSOR.execute(sql, (self.id,)).fetchall()
+        return [Player.instance_from_db(row) for row in rows]
+ 

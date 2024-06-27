@@ -43,7 +43,6 @@ def delete_team(team):
 
 def list_players(team):
     players = team.players()
-    # players = Player.get_players_by_team_id(team_id)
     for idx, player in enumerate(players, start=1):
         print(f"{idx}. {player.name} - Position: {player.position}")
 
