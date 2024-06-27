@@ -1,21 +1,20 @@
 from models.team import Team
 from models.player import Player
-
-def list_teams():
-    teams = Team.get_all()
-    header = "\nCurrent League Teams"
+        
+def list_teams(teams):
+    header = "Current League Teams"
     border = "*" * len(header)
     print(header)
     print(border)
-    for idx, team in enumerate(teams, start=1):
-        print(f"{idx}. {team.name} - Coach: {team.coach}")
+    for i, team in enumerate(teams, start=1):
+        print(f"{i}. {team.name} - Coach: {team.coach}")
 
-def create_team():
-    name = input("Enter team name: ")
+def add_team():
+    name = input("\nEnter team name: ")
     coach = input("Enter coach name: ")
-    Team.create(name, coach)
-    print(f"Team {name} created successfully.")
-
+    team = Team.create(name, coach)
+    print(f"Team {team.name} added.")
+    
 def update_team(team):
     new_name = input(f"Enter new name for team {team.name} (or press enter to keep current): ") or team.name
     new_coach = input(f"Enter new coach for team {team.name} (or press enter to keep current): ") or team.coach
@@ -40,11 +39,14 @@ def delete_team(team):
                 return team
             elif choice == 'e':
                 exit_program()
-
-def list_players(team):
+                
+def view_players(team):
     players = team.players()
-    for idx, player in enumerate(players, start=1):
-        print(f"{idx}. {player.name} - Position: {player.position}")
+    if not players:
+        print("\nNo players in this team.")
+    else:
+        for i, player in enumerate(players, start=1):
+            print(f"{i}. {player.name} - Position: {player.position}")
 
 def create_player(team_id):
     name = input("Enter player name: ")
@@ -80,3 +82,4 @@ def delete_player(player):
 def exit_program():
     print("Exiting program. Goodbye!")
     exit()
+ 

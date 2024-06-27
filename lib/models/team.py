@@ -116,15 +116,6 @@ class Team:
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
 
-    @staticmethod
-    def display_teams(teams):
-        header = "Current League Teams"
-        border = "*" * len(header)
-        print(header)
-        print(border)
-        for team in teams:
-            print(f"{team.id}. {team.name} - Coach: {team.coach}")
-
     def players(self):
         """Return list of players associated with the current team"""
         from models.player import Player
