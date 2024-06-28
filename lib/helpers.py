@@ -16,8 +16,8 @@ def add_team():
     print(f"Team {team.name} added.")
     
 def update_team(team):
-    new_name = input(f"Enter new name for team {team.name} (or press enter to keep current): ") or team.name
-    new_coach = input(f"Enter new coach for team {team.name} (or press enter to keep current): ") or team.coach
+    new_name = input(f"\nEnter new name for team {team.name} (or press enter to keep current): ") or team.name
+    new_coach = input(f"\nEnter new coach for team {team.name} (or press enter to keep current): ") or team.coach
     team.name = new_name
     team.coach = new_coach
     team.save()
@@ -25,7 +25,7 @@ def update_team(team):
 
 def delete_team(team):
     while True:
-        confirmation = input(f"Are you sure you want to delete the team {team.name}? (y/n): ").lower()
+        confirmation = input(f"\nAre you sure you want to delete the team {team.name}? (y/n): ").lower()
         if confirmation == 'y':
             team.delete()
             print(f"\nTeam {team.name} deleted successfully.\n")
@@ -33,7 +33,7 @@ def delete_team(team):
         elif confirmation == 'n':
             return team
         else:
-            print("Invalid choice. Please select 'y' or 'n'.")
+            print("\nInvalid choice. Please select 'y' or 'n'.")
             choice = input("Press 'B' to go back or 'E' to exit: ").lower()
             if choice == 'b' or choice == 'n':
                 return team
@@ -49,30 +49,30 @@ def view_players(team):
             print(f"{i}. {player.name} - Position: {player.position}")
 
 def create_player(team_id):
-    name = input("Enter player name: ")
-    position = input("Enter player position: ")
+    name = input("\nEnter player name: ")
+    position = input("\nEnter player position: ")
     Player.create(name, position, team_id)
     print(f"Player {name} created successfully.")
 
 def update_player(player):
-    new_name = input(f"Enter new name for player {player.name} (or press enter to keep current): ") or player.name
-    new_position = input(f"Enter new position for player {player.position} (or press enter to keep current): ") or player.position
+    new_name = input(f"\nEnter new name for player {player.name} (or press enter to keep current): ") or player.name
+    new_position = input(f"\nEnter new position for player {player.position} (or press enter to keep current): ") or player.position
     player.name = new_name
     player.position = new_position
     player.save()
-    print(f"Player {player.name} updated successfully.")
+    print(f"\nPlayer {player.name} updated successfully.")
 
 def delete_player(player):
     while True:
-        confirmation = input(f"Are you sure you want to delete the player {player.name}? (y/n): ").lower()
+        confirmation = input(f"\nAre you sure you want to delete the player {player.name}? (y/n): ").lower()
         if confirmation == 'y':
             player.delete()
-            print(f"Player {player.name} deleted successfully.")
+            print(f"\nPlayer {player.name} deleted successfully.")
             return None
         elif confirmation == 'n':
             return player
         else:
-            print("Invalid choice. Please select 'y' or 'n'.")
+            print("\nInvalid choice. Please select 'y' or 'n'.")
             choice = input("Press 'B' to go back or 'E' to exit: ").lower()
             if choice == 'b' or choice == 'n':
                 return player

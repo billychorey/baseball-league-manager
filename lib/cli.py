@@ -48,7 +48,7 @@ def teams_loop():
 
 def manage_team(team):
     while True:
-        print(f"Selected Team: {team.name} - Coach: {team.coach}")
+        print(f"\n Selected Team: {team.name} - Coach: {team.coach}")
         print("************************************")
         print("1. View players")
         print("2. Add player")
@@ -76,6 +76,8 @@ def manage_team(team):
 
 def view_players_and_manage(team):
     while True:
+        print("\nCurrent Roster:\n")
+
         view_players(team)
         print("************************************")
         print("Select a player by number")
