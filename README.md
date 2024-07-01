@@ -66,18 +66,18 @@ This is the main entry point for the CLI application. It provides an interactive
 - **`manage_player(playe, team)`**: Manages operations related to a specific player, including editing the player and deleting the player.
 
 
-##Models
+## Models
 
-##Player
+## Player
 The Player class represents a player in the baseball league. It provides methods to interact with the players' data in the database.
 
-##Attributes
+## Attributes
 id: Integer, primary key.
 name: String, name of the player.
 position: String, position of the player.
 team_id: Integer, foreign key referencing the team.
 
-##Methods
+## Methods
 __init__(self, name, position, team_id, id=None): Initializes a new player instance.
 __repr__(self): Returns a string representation of the player instance.
 
@@ -96,15 +96,15 @@ find_by_id(cls, id): Class method to find a player by its id.
 find_by_name(cls, name): Class method to find a player by its name.
 
 
-##Team
+## Team
 The Team class represents a team in the baseball league. It provides methods to interact with the teams' data in the database.
 
-##Attributes
+## Attributes
 id: Integer, primary key.
 name: String, name of the team.
 coach: String, name of the team's coach.
 
-##Methods
+## Methods
 __init__(self, name, coach, id=None): Initializes a new team instance.
 __repr__(self): Returns a string representation of the team instance.
 
