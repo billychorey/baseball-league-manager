@@ -63,7 +63,7 @@ This is the main entry point for the CLI application. It provides an interactive
 - **`display_teams()`**: Displays a list of all teams.
 - **`find_team_by_name()`**: Allows users to find a team by its name.
 - **`manage_team(team)`**: Manages operations related to a specific team, including viewing players, editing the team, deleting the team, and finding players by name.
-- **`view_players(team)`**: Displays a list of players associated with a specific team.
+- **`list_players(team)`**: Displays a list of players associated with a specific team.
 - **`handle_player_selection(players, team)`**: Handles the selection of a player from the list of players.
 - **`find_player_in_team(team)`**: Allows users to find a player by name within a specific team.
 - **`manage_player(player)`**: Manages operations related to a specific player, including editing the player, deleting the player, and viewing the player's team.

@@ -71,22 +71,16 @@ class Player:
         CONN.commit()
 
     def save(self):
-        if self.id:
-            sql = """
-                UPDATE players
-                SET name = ?, position = ?, team_id = ?
-                WHERE id = ?
-            """
-            CURSOR.execute(sql, (self.name, self.position, self.team_id, self.id))
-        else:
-            sql = """
-                INSERT INTO players (name, position, team_id)
-                VALUES (?, ?, ?)
-            """
-            CURSOR.execute(sql, (self.name, self.position, self.team_id))
-            self.id = CURSOR.lastrowid
-        
+
+        sql = """
+            INSERT INTO players (name, position, team_id)
+            VALUES (?, ?, ?)
+        """
+        CURSOR.execute(sql, (self.name, self.position, self.team_id))
         CONN.commit()
+
+        
+        self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
     def update(self):
@@ -99,12 +93,23 @@ class Player:
         CONN.commit()
 
     def delete(self):
-        if self.id:
-            CURSOR.execute("DELETE FROM players WHERE id = ?", (self.id,))
-            CONN.commit()
-            del type(self).all[self.id]
-            self.id = None
+        """Delete the table row corresponding to the current Player instance,
+        delete the dictionary entry, and reassign id attribute"""
 
+        sql = """
+            DELETE FROM players
+            WHERE id = ?
+        """
+
+        CURSOR.execute(sql, (self.id,))
+        CONN.commit()
+
+        # Delete the dictionary entry using id as the key
+        del type(self).all[self.id]
+
+        # Set the id to None
+        self.id = None
+        
     @classmethod
     def create(cls, name, position, team_id):
         player = cls(name, position, team_id)
@@ -137,6 +142,7 @@ class Player:
         if row:
             return cls.instance_from_db(row)
         return None
+    # not using this - may delete
 
     @classmethod
     def find_by_name(cls, name):
@@ -145,3 +151,4 @@ class Player:
         if row:
             return cls.instance_from_db(row)
         return None
+    # also not using this should delete with above if

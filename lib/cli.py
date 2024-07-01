@@ -1,9 +1,9 @@
 from models.team import Team
 from models.player import Player
 from helpers import (
-    list_teams,
-    add_team,
-    view_players,
+    display_all_teams,
+    create_team,
+    display_all_players,
     update_team,
     delete_team,
     create_player,
@@ -21,26 +21,26 @@ def cli():
         if choice == 't':
             teams_loop()
         elif choice == 'e':
-            exit()
+            exit_program()
         else:
             print("Invalid choice. Please try again.")
 
 def teams_loop():
     while True:
-        teams = Team.get_all()
-        list_teams(teams)
+        display_all_teams()  # List teams
         print("\n- Select a team by number")
         print("- 'A' to add a team")
         print("- 'B' to go back")
         print("- 'E' to exit")
         choice = input("Enter your choice: ").lower()
         if choice == 'a':
-            add_team()
+            create_team()
         elif choice == 'b':
             return
         elif choice == 'e':
             exit_program()
         else:
+            teams = Team.get_all()  # Fetch the teams again to ensure the list is up-to-date
             try:
                 manage_team(teams[int(choice) - 1])
             except (IndexError, ValueError):
@@ -48,7 +48,7 @@ def teams_loop():
 
 def manage_team(team):
     while True:
-        print(f"\n Selected Team: {team.name} - Coach: {team.coach}")
+        print(f"\nSelected Team: {team.name} - Coach: {team.coach}")
         print("************************************")
         print("1. View players")
         print("2. Add player")
@@ -77,8 +77,7 @@ def manage_team(team):
 def view_players_and_manage(team):
     while True:
         print("\nCurrent Roster:\n")
-
-        view_players(team)
+        display_all_players(team)
         print("************************************")
         print("Select a player by number")
         print("A. Add player")
@@ -112,9 +111,9 @@ def manage_player(player, team):
             update_player(player)
         elif choice == '2':
             delete_player(player)
-            return "back"  # Go back to the previous menu after deleting the player
+            return  # Go back to the previous menu after deleting the player
         elif choice == 'b':
-            return "back"
+            return
         elif choice == 'e':
             exit_program()
         else:

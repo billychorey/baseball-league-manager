@@ -1,7 +1,8 @@
 from models.team import Team
 from models.player import Player
-        
-def list_teams(teams):
+
+def display_all_teams():
+    teams = Team.get_all()
     header = "Current League Teams"
     border = "*" * len(header)
     print(header)
@@ -9,19 +10,25 @@ def list_teams(teams):
     for i, team in enumerate(teams, start=1):
         print(f"{i}. {team.name} - Coach: {team.coach}")
 
-def add_team():
+def create_team():
     name = input("\nEnter team name: ")
-    coach = input("Enter coach name: ")
-    team = Team.create(name, coach)
-    print(f"Team {team.name} added.")
-    
+    coach = input("\nEnter coach name: ")
+    try:
+        team = Team.create(name, coach)
+        print(f"Team {team.name} added.")
+    except Exception as exc:
+        print("Error creating team: ", exc)
+
 def update_team(team):
-    new_name = input(f"\nEnter new name for team {team.name} (or press enter to keep current): ") or team.name
-    new_coach = input(f"\nEnter new coach for team {team.name} (or press enter to keep current): ") or team.coach
-    team.name = new_name
-    team.coach = new_coach
-    team.save()
-    print(f"Team {team.name} updated successfully.")
+    try:
+        new_name = input(f"\nEnter new name for team {team.name} (or press enter to keep current): ") or team.name
+        team.name = new_name
+        new_coach = input(f"\nEnter new coach for team {team.name} (or press enter to keep current): ") or team.coach
+        team.coach = new_coach
+        team.update()
+        print(f"Team {team.name} updated successfully.")
+    except Exception as exc:
+        print("Error updating team: ", exc)
 
 def delete_team(team):
     while True:
@@ -29,18 +36,18 @@ def delete_team(team):
         if confirmation == 'y':
             team.delete()
             print(f"\nTeam {team.name} deleted successfully.\n")
-            return None
+            return
         elif confirmation == 'n':
-            return team
+            return
         else:
             print("\nInvalid choice. Please select 'y' or 'n'.")
             choice = input("Press 'B' to go back or 'E' to exit: ").lower()
             if choice == 'b' or choice == 'n':
-                return team
+                return
             elif choice == 'e':
                 exit_program()
-                
-def view_players(team):
+
+def display_all_players(team):
     players = team.players()
     if not players:
         print("\nNo players in this team.")
@@ -51,35 +58,40 @@ def view_players(team):
 def create_player(team_id):
     name = input("\nEnter player name: ")
     position = input("\nEnter player position: ")
-    Player.create(name, position, team_id)
-    print(f"Player {name} created successfully.")
+    try:
+        player = Player.create(name, position, team_id)
+        print(f"Player {name} created successfully.")
+    except Exception as exc:
+        print("Error creating player: ", exc)
 
 def update_player(player):
-    new_name = input(f"\nEnter new name for player {player.name} (or press enter to keep current): ") or player.name
-    new_position = input(f"\nEnter new position for player {player.position} (or press enter to keep current): ") or player.position
-    player.name = new_name
-    player.position = new_position
-    player.save()
-    print(f"\nPlayer {player.name} updated successfully.")
+    try:
+        new_name = input(f"\nEnter new name for player {player.name} (or press enter to keep current): ") or player.name
+        new_position = input(f"\nEnter new position for player {player.name} (or press enter to keep current): ") or player.position
+        player.name = new_name
+        player.position = new_position
+        player.update()
+        print(f"\nPlayer {player.name} updated successfully.")
+    except Exception as exc:
+        print("Error updating player: ", exc)
 
 def delete_player(player):
     while True:
         confirmation = input(f"\nAre you sure you want to delete the player {player.name}? (y/n): ").lower()
         if confirmation == 'y':
             player.delete()
-            print(f"\nPlayer {player.name} deleted successfully.")
-            return None
+            print(f"\nPlayer {player.name} deleted successfully.\n")
+            return
         elif confirmation == 'n':
-            return player
+            return
         else:
             print("\nInvalid choice. Please select 'y' or 'n'.")
             choice = input("Press 'B' to go back or 'E' to exit: ").lower()
             if choice == 'b' or choice == 'n':
-                return player
+                return
             elif choice == 'e':
                 exit_program()
 
 def exit_program():
     print("Exiting program. Goodbye!")
     exit()
- 
