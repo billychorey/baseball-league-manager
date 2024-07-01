@@ -60,49 +60,67 @@ This is the main entry point for the CLI application. It provides an interactive
 #### Key Functions:
 
 - **`cli()`**: The main function that runs the CLI loop and handles user input.
-- **`display_teams()`**: Displays a list of all teams.
-- **`find_team_by_name()`**: Allows users to find a team by its name.
-- **`manage_team(team)`**: Manages operations related to a specific team, including viewing players, editing the team, deleting the team, and finding players by name.
-- **`list_players(team)`**: Displays a list of players associated with a specific team.
-- **`handle_player_selection(players, team)`**: Handles the selection of a player from the list of players.
-- **`find_player_in_team(team)`**: Allows users to find a player by name within a specific team.
-- **`manage_player(player)`**: Manages operations related to a specific player, including editing the player, deleting the player, and viewing the player's team.
-- **`view_team(team)`**: Displays the details of a specific team, including its players.
+- **`teams_loop()`**:  Displays a list of all teams and provides options to add a team, go back, or exit.
+- **`manage_team(team)`**:  Manages operations related to a specific team, including viewing players, adding a player, editing the team, and deleting the team.
+- **`view_players_and_manage(team)`**: Displays a list of players associated with a specific team and provides options to manage the players.
+- **`manage_player(playe, team)`**: Manages operations related to a specific player, including editing the player and deleting the player.
 
-### `lib/models/team.py`
 
-Defines the `Team` class, representing a baseball team. This class includes methods for interacting with the database to create, read, update, and delete team records.
+##Models
 
-#### Key Methods:
+##Player
+The Player class represents a player in the baseball league. It provides methods to interact with the players' data in the database.
 
-- **`__init__(self, name, coach, id=None)`**: Initializes a new team instance.
-- **`create_tables(cls)`**: Creates the teams table in the database.
-- **`drop_table(cls)`**: Drops the teams table from the database.
-- **`save(self)`**: Saves the team instance to the database.
-- **`create(cls, name, coach)`**: Creates a new team and saves it to the database.
-- **`update(self)`**: Updates the team's details in the database.
-- **`delete(self)`**: Deletes the team from the database.
-- **`get_all(cls)`**: Retrieves all teams from the database.
-- **`find_by_id(cls, id)`**: Finds a team by its ID.
-- **`find_by_name(cls, name)`**: Finds a team by its name.
-- **`players(self)`**: Retrieves all players associated with the team.
+##Attributes
+id: Integer, primary key.
+name: String, name of the player.
+position: String, position of the player.
+team_id: Integer, foreign key referencing the team.
 
-### `lib/models/player.py`
+##Methods
+__init__(self, name, position, team_id, id=None): Initializes a new player instance.
+__repr__(self): Returns a string representation of the player instance.
 
-Defines the `Player` class, representing a baseball player. This class includes methods for interacting with the database to create, read, update, and delete player records.
+name: Property to get and set the name attribute.
+position: Property to get and set the position attribute.
+team_id: Property to get and set the team_id attribute.
+create_tables(): Creates the players table in the database.
+drop_table(): Drops the players table from the database.
+save(): Saves the player instance to the database.
+update(): Updates the player instance in the database.
+delete(): Deletes the player instance from the database.
+create(cls, name, position, team_id): Class method to create a new player instance and save it to the database.
+instance_from_db(cls, row): Class method to return a Player object having the attribute values from the table row.
+get_all(cls): Class method to return a list of all player instances.
+find_by_id(cls, id): Class method to find a player by its id.
+find_by_name(cls, name): Class method to find a player by its name.
 
-#### Key Methods:
 
-- **`__init__(self, name, position, team, id=None)`**: Initializes a new player instance.
-- **`create_tables(cls)`**: Creates the players table in the database.
-- **`drop_table(cls)`**: Drops the players table from the database.
-- **`save(self)`**: Saves the player instance to the database.
-- **`create(cls, name, position, team_id)`**: Creates a new player and saves it to the database.
-- **`delete(self)`**: Deletes the player from the database.
-- **`get_all(cls)`**: Retrieves all players from the database.
-- **`find_by_id(cls, id)`**: Finds a player by its ID.
-- **`find_by(cls, attribute, value)`**: Finds a player by a specified attribute.
-- **`get_players_by_team_id(cls, team_id)`**: Retrieves all players associated with a specific team.
+##Team
+The Team class represents a team in the baseball league. It provides methods to interact with the teams' data in the database.
+
+##Attributes
+id: Integer, primary key.
+name: String, name of the team.
+coach: String, name of the team's coach.
+
+##Methods
+__init__(self, name, coach, id=None): Initializes a new team instance.
+__repr__(self): Returns a string representation of the team instance.
+
+name: Property to get and set the name attribute.
+coach: Property to get and set the coach attribute.
+create_table(): Creates the teams table in the database.
+drop_table(): Drops the teams table from the database.
+save(): Saves the team instance to the database.
+update(): Updates the team instance in the database.
+delete(): Deletes the team instance from the database.
+create(cls, name, coach): Class method to create a new team instance and save it to the database.
+instance_from_db(cls, row): Class method to return a Team object having the attribute values from the table row.
+get_all(cls): Class method to return a list of all team instances.
+find_by_id(cls, id): Class method to find a team by its id.
+find_by_name(cls, name): Class method to find a team by its name.
+players(self): Method to return a list of players associated with the current team.
 
 ## 🤝 Contributing
 
