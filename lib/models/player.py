@@ -79,7 +79,6 @@ class Player:
         CURSOR.execute(sql, (self.name, self.position, self.team_id))
         CONN.commit()
 
-        
         self.id = CURSOR.lastrowid
         type(self).all[self.id] = self
 
@@ -118,37 +117,37 @@ class Player:
 
     @classmethod
     def instance_from_db(cls, row):
+        team_id = row[3]
+        if not Team.find_by_id(team_id):
+            print(f"Warning: Team ID {team_id} does not exist for player {row[1]}")
+            return None
         player = cls.all.get(row[0])
         if player:
             player.name = row[1]
             player.position = row[2]
-            player.team_id = row[3]
+            player.team_id = team_id
         else:
-            player = cls(row[1], row[2], row[3])
+            player = cls(row[1], row[2], team_id)
             player.id = row[0]
             cls.all[player.id] = player
         return player
+
 
     @classmethod
     def get_all(cls):
         sql = "SELECT * FROM players"
         rows = CURSOR.execute(sql).fetchall()
-        return [cls.instance_from_db(row) for row in rows]
+        return [player for player in (cls.instance_from_db(row) for row in rows) if player is not None]
+
 
     @classmethod
     def find_by_id(cls, id):
         sql = "SELECT * FROM players WHERE id = ?"
         row = CURSOR.execute(sql, (id,)).fetchone()
-        if row:
-            return cls.instance_from_db(row)
-        return None
-    # not using this - may delete
+        return cls.instance_from_db(row) if row else None
 
     @classmethod
     def find_by_name(cls, name):
         sql = "SELECT * FROM players WHERE name = ?"
         row = CURSOR.execute(sql, (name,)).fetchone()
-        if row:
-            return cls.instance_from_db(row)
-        return None
-    # also not using this should delete with above if
+        return cls.instance

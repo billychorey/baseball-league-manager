@@ -115,7 +115,7 @@ class Team:
         sql = "SELECT * FROM teams WHERE LOWER(name) = LOWER(?)"
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
-
+    
     def players(self):
         """Return list of players associated with the current team"""
         from models.player import Player

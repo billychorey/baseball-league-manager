@@ -1,9 +1,19 @@
 from models.team import Team
 from models.player import Player
 
+def find_by_attribute(object_list, attribute, value):
+    return [obj for obj in object_list if hasattr(obj, attribute) and getattr(obj, attribute).lower() == value.lower()]
+
+def find_team_by_name(teams, name):
+    return find_by_attribute(teams, "name", name)
+
+def find_player_by_name(players, name):
+    return find_by_attribute(players, "name", name)
+
+
 def display_all_teams():
     teams = Team.get_all()
-    header = "Current League Teams"
+    header = "\nCurrent League Teams"
     border = "*" * len(header)
     print(header)
     print(border)

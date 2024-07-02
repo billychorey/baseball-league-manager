@@ -1,6 +1,8 @@
 from models.team import Team
 from models.player import Player
 from helpers import (
+    find_team_by_name,
+    find_player_by_name,
     display_all_teams,
     create_team,
     display_all_players,
@@ -14,16 +16,29 @@ from helpers import (
 
 def cli():
     while True:
-        print("1. Type T or t to view all teams")
-        print("2. Type E or e to exit")
+        print("\n1. Type T or t to view all teams")
+        print("2. Type S or s to search for a team by name")
+        print("3. Type E or e to exit")
 
-        choice = input("Choose an option: ").lower()
+        choice = input("\nChoose an option: ").lower()
         if choice == 't':
             teams_loop()
+        elif choice == 's':
+            search_team()
         elif choice == 'e':
             exit_program()
         else:
-            print("Invalid choice. Please try again.")
+            print("\nInvalid choice. Please try again.")
+
+def search_team():
+    name = input("Enter the team name: ")
+    teams = find_team_by_name(Team.get_all(), name)
+    if teams:
+        for team in teams:
+            print(f"Found Team: {team.name}")
+            manage_team(team)
+    else:
+        print("No teams found with that name.")
 
 def teams_loop():
     while True:
@@ -54,6 +69,7 @@ def manage_team(team):
         print("2. Add player")
         print("3. Edit team")
         print("4. Delete team")
+        print("5. Search for player by name")
         print("B. Go back")
         print("E. Exit")
 
@@ -67,13 +83,25 @@ def manage_team(team):
         elif choice == '4':
             delete_team(team)
             return  # Go back to the previous menu after deleting the team
+        elif choice == '5':
+            search_player_within_team(team)
         elif choice == 'b':
             return
         elif choice == 'e':
             exit_program()
         else:
-            print("Invalid choice. Please try again.")
-
+            print("\nInvalid choice. Please try again.")
+            
+def search_player_within_team(team):
+    name = input("\nEnter the player name: ")
+    players = find_player_by_name(team.players(), name)
+    if players:
+        for player in players:
+            print(f"\nFound Player: {player.name}")
+            manage_player(player, team)
+    else:
+        print("\nNo players found with that name in this team.")
+                   
 def view_players_and_manage(team):
     while True:
         print("\nCurrent Roster:\n")
@@ -95,7 +123,7 @@ def view_players_and_manage(team):
                 players = team.players()
                 manage_player(players[int(choice) - 1], team)
             except (IndexError, ValueError):
-                print("Invalid choice. Please try again.")
+                print("\nInvalid choice. Please try again.")
 
 def manage_player(player, team):
     while True:
@@ -117,7 +145,7 @@ def manage_player(player, team):
         elif choice == 'e':
             exit_program()
         else:
-            print("Invalid choice. Please try again.")
+            print("\nInvalid choice. Please try again.")
 
 if __name__ == "__main__":
     cli()
