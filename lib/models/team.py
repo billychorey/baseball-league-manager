@@ -122,3 +122,5 @@ class Team:
         sql = "SELECT * FROM players WHERE team_id = ?"
         rows = CURSOR.execute(sql, (self.id,)).fetchall()
         return [Player.instance_from_db(row) for row in rows]
+
+        return Player.get_by_team_id(self.id)

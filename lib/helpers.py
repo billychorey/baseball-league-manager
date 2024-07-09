@@ -7,9 +7,28 @@ def find_by_attribute(object_list, attribute, value):
 def find_team_by_name(teams, name):
     return find_by_attribute(teams, "name", name)
 
+def display_all_players():
+    players = Player.get_all()
+    teams = {team.id: team.name for team in Team.get_all()}  # Create a dictionary of team IDs to team names
+
+    if not players:
+        print("\nNo players in the league.")
+    else:
+        for player in players:
+            team_name = teams.get(player.team_id)
+            if team_name:
+                print(f"Name: {player.name}, Team: {team_name}, Position: {player.position}")
+
+def display_team_players(team):
+    players = team.players()
+    if not players:
+        print("\nNo players in this team.")
+    else:
+        for i, player in enumerate(players, start=1):
+            print(f"{i}. {player.name} - Position: {player.position}")
+
 def find_player_by_name(players, name):
     return find_by_attribute(players, "name", name)
-
 
 def display_all_teams():
     teams = Team.get_all()
@@ -56,14 +75,6 @@ def delete_team(team):
                 return
             elif choice == 'e':
                 exit_program()
-
-def display_all_players(team):
-    players = team.players()
-    if not players:
-        print("\nNo players in this team.")
-    else:
-        for i, player in enumerate(players, start=1):
-            print(f"{i}. {player.name} - Position: {player.position}")
 
 def create_player(team_id):
     name = input("\nEnter player name: ")

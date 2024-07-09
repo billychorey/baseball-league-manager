@@ -6,6 +6,7 @@ from helpers import (
     display_all_teams,
     create_team,
     display_all_players,
+    display_team_players,
     update_team,
     delete_team,
     create_player,
@@ -16,9 +17,10 @@ from helpers import (
 
 def cli():
     while True:
-        print("\n1. Type T or t to view all teams")
-        print("2. Type S or s to search for a team by name")
-        print("3. Type E or e to exit")
+        print("\n1. Type P or p to view all players")
+        print("2. Type T or t to view all teams")
+        print("3. Type S or s to search for a team by name")
+        print("4. Type E or e to exit")
 
         choice = input("\nChoose an option: ").lower()
         if choice == 't':
@@ -27,6 +29,8 @@ def cli():
             search_team()
         elif choice == 'e':
             exit_program()
+        elif choice == 'p':
+            display_all_players()
         else:
             print("\nInvalid choice. Please try again.")
 
@@ -42,7 +46,7 @@ def search_team():
 
 def teams_loop():
     while True:
-        display_all_teams()  # List teams
+        display_all_teams()
         print("\n- Select a team by number")
         print("- 'A' to add a team")
         print("- 'B' to go back")
@@ -55,7 +59,7 @@ def teams_loop():
         elif choice == 'e':
             exit_program()
         else:
-            teams = Team.get_all()  # Fetch the teams again to ensure the list is up-to-date
+            teams = Team.get_all()
             try:
                 manage_team(teams[int(choice) - 1])
             except (IndexError, ValueError):
@@ -82,7 +86,7 @@ def manage_team(team):
             update_team(team)
         elif choice == '4':
             delete_team(team)
-            return  # Go back to the previous menu after deleting the team
+            return
         elif choice == '5':
             search_player_within_team(team)
         elif choice == 'b':
@@ -91,7 +95,7 @@ def manage_team(team):
             exit_program()
         else:
             print("\nInvalid choice. Please try again.")
-            
+
 def search_player_within_team(team):
     name = input("\nEnter the player name: ")
     players = find_player_by_name(team.players(), name)
@@ -101,11 +105,11 @@ def search_player_within_team(team):
             manage_player(player, team)
     else:
         print("\nNo players found with that name in this team.")
-                   
+
 def view_players_and_manage(team):
     while True:
         print("\nCurrent Roster:\n")
-        display_all_players(team)
+        display_team_players(team)
         print("************************************")
         print("Select a player by number")
         print("A. Add player")
@@ -139,7 +143,7 @@ def manage_player(player, team):
             update_player(player)
         elif choice == '2':
             delete_player(player)
-            return  # Go back to the previous menu after deleting the player
+            return
         elif choice == 'b':
             return
         elif choice == 'e':

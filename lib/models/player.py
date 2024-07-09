@@ -71,7 +71,6 @@ class Player:
         CONN.commit()
 
     def save(self):
-
         sql = """
             INSERT INTO players (name, position, team_id)
             VALUES (?, ?, ?)
@@ -92,21 +91,14 @@ class Player:
         CONN.commit()
 
     def delete(self):
-        """Delete the table row corresponding to the current Player instance,
-        delete the dictionary entry, and reassign id attribute"""
-
         sql = """
             DELETE FROM players
             WHERE id = ?
         """
-
         CURSOR.execute(sql, (self.id,))
         CONN.commit()
 
-        # Delete the dictionary entry using id as the key
         del type(self).all[self.id]
-
-        # Set the id to None
         self.id = None
         
     @classmethod
@@ -119,7 +111,6 @@ class Player:
     def instance_from_db(cls, row):
         team_id = row[3]
         if not Team.find_by_id(team_id):
-            print(f"Warning: Team ID {team_id} does not exist for player {row[1]}")
             return None
         player = cls.all.get(row[0])
         if player:
@@ -132,13 +123,11 @@ class Player:
             cls.all[player.id] = player
         return player
 
-
     @classmethod
     def get_all(cls):
         sql = "SELECT * FROM players"
         rows = CURSOR.execute(sql).fetchall()
         return [player for player in (cls.instance_from_db(row) for row in rows) if player is not None]
-
 
     @classmethod
     def find_by_id(cls, id):
@@ -150,4 +139,4 @@ class Player:
     def find_by_name(cls, name):
         sql = "SELECT * FROM players WHERE name = ?"
         row = CURSOR.execute(sql, (name,)).fetchone()
-        return cls.instance
+        return cls.instance_from_db(row) if row else None
