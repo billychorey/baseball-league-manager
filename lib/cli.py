@@ -22,7 +22,7 @@ def cli():
         print("3. Type S or s to search for a team by name")
         print("4. Type E or e to exit")
 
-        choice = input("\nChoose an option: ").lower()
+        choice = input("\nChoose an option: \n").lower()
         if choice == 't':
             teams_loop()
         elif choice == 's':
@@ -77,7 +77,7 @@ def manage_team(team):
         print("B. Go back")
         print("E. Exit")
 
-        choice = input("\nChoose an option: ").lower()
+        choice = input("\nChoose an option: \n").lower()
         if choice == '1':
             view_players_and_manage(team)
         elif choice == '2':
@@ -115,7 +115,7 @@ def view_players_and_manage(team):
         print("A. Add player")
         print("B. Go back")
         print("E. Exit")
-        choice = input("Choose an option: ").lower()
+        choice = input("\nChoose an option: \n").lower()
         if choice == 'a':
             create_player(team.id)
         elif choice == 'b':
@@ -138,7 +138,7 @@ def manage_player(player, team):
         print("B. Go back")
         print("E. Exit")
 
-        choice = input("Choose an option: ").lower()
+        choice = input("\nChoose an option: \n").lower()
         if choice == '1':
             update_player(player)
         elif choice == '2':

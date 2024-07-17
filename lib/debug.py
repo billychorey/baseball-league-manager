@@ -9,9 +9,10 @@ def reset_database():
     Player.drop_table()
     Team.drop_table()
     Team.create_table()
-    Player.create_table()
+    Player.create_tables()
 
    
 
 
 breakpoint()
+#not using ipdb because of deprecation concerns
